@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord - EcoTrack{% endblock %}
+
+{% block body %}
+<div class="px-4 py-6 sm:px-0">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Tableau de bord</h1>
+        <p class="text-gray-600">Suivez votre consommation énergétique</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {% for typeEnergie in typesEnergie %}
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">{{ typeEnergie.nom }}</h3>
+                        <p class="text-sm text-gray-500">{{ typeEnergie.unite ?? 'kWh' }}</p>
+                    </div>
+                    {% if typeEnergie.icone %}
+                        <span class="text-3xl">{{ typeEnergie.icone }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900">Mes consommations</h2>
+        </div>
+        <div class="p-6">
+            {% if consommations|length > 0 %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valeur</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for consommation in consommations %}
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ consommation.dateReleve|date('d/m/Y') }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ consommation.typeEnergie.nom }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ consommation.valeur }} {{ consommation.typeEnergie.unite ?? 'kWh' }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-12">
+                    <p class="text-gray-500 mb-4">Aucune consommation enregistrée pour le moment.</p>
+                    <a href="#" class="inline-flex items-center px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600">
+                        Ajouter une consommation
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

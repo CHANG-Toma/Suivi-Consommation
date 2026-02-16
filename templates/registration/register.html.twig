@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - EcoTrack{% endblock %}
+
+{% block body %}
+<div class="w-full max-w-md">
+    <div class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-bold text-emerald-500 mb-2">EcoTrack</h1>
+            <p class="text-gray-600">Créer un compte</p>
+        </div>
+
+        {{ form_start(registrationForm, {'attr': {'class': 'space-y-4'}}) }}
+            {{ form_row(registrationForm.email) }}
+            {{ form_row(registrationForm.firstName) }}
+            {{ form_row(registrationForm.lastName) }}
+            {{ form_row(registrationForm.plainPassword) }}
+
+            <button type="submit" 
+                    class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150">
+                S'inscrire
+            </button>
+        {{ form_end(registrationForm) }}
+
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600">
+                Déjà un compte ? 
+                <a href="{{ path('login') }}" class="text-emerald-500 hover:text-emerald-600 font-medium">
+                    Se connecter
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

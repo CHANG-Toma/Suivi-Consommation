@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EcoTrack - Suivi de consommation énergétique{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+    {% block stylesheets %}{% endblock %}
+</head>
+<body class="bg-gray-50 min-h-screen">
+    {% if app.user %}
+        <nav class="bg-white shadow-sm border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <a href="{{ path('dashboard') }}" class="flex items-center space-x-2">
+                            <span class="text-2xl font-bold text-emerald-500">EcoTrack</span>
+                        </a>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-gray-700">{{ app.user.email }}</span>
+                        <a href="{{ path('logout') }}" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                            Déconnexion
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    {% endif %}
+
+    <main class="{% if app.user %}max-w-7xl mx-auto py-6 sm:px-6 lg:px-8{% else %}min-h-screen flex items-center justify-center{% endif %}">
+        {% block body %}{% endblock %}
+    </main>
+
+    {% block javascripts %}{% endblock %}
+</body>
+</html>
