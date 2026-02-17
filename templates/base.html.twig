@@ -9,9 +9,9 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-900 dark:text-gray-100 transition-colors">
     {% if app.user %}
-        <div class="flex min-h-screen">
+        <div class="flex h-screen overflow-hidden">
             {# Sidebar #}
-            <aside id="app-sidebar" class="w-72 shrink-0 overflow-hidden flex flex-col bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 shadow-sm transition-all duration-300">
+            <aside id="app-sidebar" class="h-screen w-72 shrink-0 overflow-hidden flex flex-col bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 shadow-sm transition-all duration-300">
                 {# Logo #}
                 <div class="p-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between gap-3">
                     <a id="app-brand" href="{{ path('dashboard') }}" class="flex items-center gap-2.5 group min-w-0">
@@ -96,7 +96,7 @@
                 </div>
             </aside>
             {# Contenu principal #}
-            <main class="flex-1 overflow-auto">
+            <main class="flex-1 overflow-y-auto">
     {% else %}
         <main class="min-h-screen flex items-center justify-center">
     {% endif %}
