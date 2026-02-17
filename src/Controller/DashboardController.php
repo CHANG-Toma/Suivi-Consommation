@@ -39,57 +39,54 @@ class DashboardController extends AbstractController
         $monthStart = new \DateTimeImmutable('first day of this month 00:00:00');
         $nextMonthStart = $monthStart->modify('+1 month');
         $monthlyTotalsByType = $consommationRepository->getMonthlyTotalsByType($user, $monthStart, $nextMonthStart);
+        $daysInMonth = (int) $monthStart->format('t');
+        $dayLabels = array_map(static fn (int $day): string => str_pad((string) $day, 2, '0', STR_PAD_LEFT), range(1, $daysInMonth));
 
-        $dailyCountMap = [];
-        $typeCountMap = [];
-        $typeColorMap = [];
-        $defaultColors = ['#10B981', '#06B6D4', '#F59E0B', '#8B5CF6', '#F43F5E', '#0EA5E9'];
-        $colorIndex = 0;
+        $perTypeChartData = [];
+        foreach ($typesEnergie as $typeEnergie) {
+            $typeId = $typeEnergie->getId();
+            if (null === $typeId) {
+                continue;
+            }
+
+            $perTypeChartData[(string) $typeId] = [
+                'labels' => $dayLabels,
+                'values' => array_fill(0, $daysInMonth, 0.0),
+                'color' => $typeEnergie->getCouleur() ?? '#10B981',
+            ];
+        }
 
         foreach ($consommations as $consommation) {
             $dateReleve = $consommation->getDateReleve();
-            if (null !== $dateReleve) {
-                $dateKey = $dateReleve->format('Y-m-d');
-                $dailyCountMap[$dateKey] = ($dailyCountMap[$dateKey] ?? 0) + 1;
+            $typeEnergie = $consommation->getTypeEnergie();
+
+            if (null === $dateReleve || null === $typeEnergie || null === $typeEnergie->getId()) {
+                continue;
             }
 
-            $type = $consommation->getTypeEnergie();
-            $typeLabel = $type?->getNom() ?? 'Non défini';
-            $typeCountMap[$typeLabel] = ($typeCountMap[$typeLabel] ?? 0) + 1;
-            if (!isset($typeColorMap[$typeLabel])) {
-                $typeColorMap[$typeLabel] = $type?->getCouleur() ?? $defaultColors[$colorIndex % \count($defaultColors)];
-                ++$colorIndex;
+            if ($dateReleve < $monthStart || $dateReleve >= $nextMonthStart) {
+                continue;
+            }
+
+            $dayIndex = (int) $dateReleve->format('j') - 1;
+            if ($dayIndex < 0 || $dayIndex >= $daysInMonth) {
+                continue;
+            }
+
+            $valeur = (float) ($consommation->getValeur() ?? 0);
+            $typeId = (string) $typeEnergie->getId();
+            if (isset($perTypeChartData[$typeId])) {
+                $perTypeChartData[$typeId]['values'][$dayIndex] += $valeur;
             }
         }
-
-        ksort($dailyCountMap);
-        arsort($typeCountMap);
-
-        $chartData = [
-            'daily' => [
-                'labels' => array_map(
-                    static fn (string $date): string => (new \DateTimeImmutable($date))->format('d/m'),
-                    array_keys($dailyCountMap)
-                ),
-                'values' => array_values($dailyCountMap),
-            ],
-            'types' => [
-                'labels' => array_keys($typeCountMap),
-                'values' => array_values($typeCountMap),
-                'colors' => array_map(
-                    static fn (string $label): string => $typeColorMap[$label] ?? '#10B981',
-                    array_keys($typeCountMap)
-                ),
-            ],
-        ];
 
         return $this->render('dashboard/index.html.twig', [
             'consommations' => $consommations,
             'typesEnergie' => $typesEnergie,
             'alertesRecentes' => $alertesRecentes,
-            'chartData' => $chartData,
             'monthlyTotalsByType' => $monthlyTotalsByType,
             'currentMonthLabel' => $monthStart->format('m/Y'),
+            'perTypeChartData' => $perTypeChartData,
         ]);
     }
 }

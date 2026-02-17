@@ -29,29 +29,25 @@
         {% endfor %}
     </div>
 
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
-        <div class="xl:col-span-2 bg-white dark:bg-gray-900 rounded-lg shadow border border-gray-100 dark:border-gray-800">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Évolution des relevés</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Nombre de relevés saisis par date</p>
-            </div>
-            <div class="p-6">
-                <div class="h-72">
-                    <canvas id="releves-trend-chart"></canvas>
-                </div>
-            </div>
+    <div class="mb-8">
+        <div class="mb-4">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Graphiques par énergie</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Détail quotidien des relevés pour {{ currentMonthLabel }}</p>
         </div>
-
-        <div class="bg-white dark:bg-gray-900 rounded-lg shadow border border-gray-100 dark:border-gray-800">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Répartition par type</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Volume de relevés par énergie</p>
-            </div>
-            <div class="p-6">
-                <div class="h-72">
-                    <canvas id="releves-types-chart"></canvas>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {% for typeEnergie in typesEnergie %}
+                <div class="bg-white dark:bg-gray-900 rounded-lg shadow border border-gray-100 dark:border-gray-800 p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ typeEnergie.nom }}</h3>
+                        {% if typeEnergie.icone %}
+                            <span class="text-xl">{{ typeEnergie.icone }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="h-48">
+                        <canvas id="dashboard-type-chart-{{ typeEnergie.id }}"></canvas>
+                    </div>
                 </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 
@@ -131,63 +127,47 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         (function () {
-            const chartData = {{ chartData|json_encode|raw }};
-            if (!chartData) return;
+            const perTypeChartData = {{ perTypeChartData|json_encode|raw }};
+            if (!perTypeChartData) return;
 
             const isDark = document.documentElement.classList.contains('dark');
             const gridColor = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(17, 24, 39, 0.10)';
-            const textColor = isDark ? '#D1D5DB' : '#374151';
+            const axisColor = isDark ? '#D1D5DB' : '#6B7280';
 
-            const trendCanvas = document.getElementById('releves-trend-chart');
-            if (trendCanvas && chartData.daily && chartData.daily.labels.length > 0) {
-                new Chart(trendCanvas, {
-                    type: 'line',
-                    data: {
-                        labels: chartData.daily.labels,
-                        datasets: [{
-                            label: 'Relevés',
-                            data: chartData.daily.values,
-                            borderColor: '#10B981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.18)',
-                            fill: true,
-                            tension: 0.28,
-                            pointRadius: 3
-                        }]
-                    },
-                    options: {
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { labels: { color: textColor } }
+            if (perTypeChartData) {
+                Object.entries(perTypeChartData).forEach(([typeId, data]) => {
+                    const canvas = document.getElementById(`dashboard-type-chart-${typeId}`);
+                    if (!canvas) return;
+
+                    const labels = Array.isArray(data.labels) ? data.labels : [];
+                    const values = Array.isArray(data.values) ? data.values : [];
+                    const color = data.color || '#10B981';
+
+                    new Chart(canvas, {
+                        type: 'line',
+                        data: {
+                            labels,
+                            datasets: [{
+                                data: values,
+                                borderColor: color,
+                                backgroundColor: `${color}2A`,
+                                fill: true,
+                                pointRadius: 0,
+                                tension: 0.35
+                            }]
                         },
-                        scales: {
-                            x: { ticks: { color: textColor }, grid: { color: gridColor } },
-                            y: {
-                                beginAtZero: true,
-                                ticks: { color: textColor, precision: 0 },
-                                grid: { color: gridColor }
+                        options: {
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: { mode: 'index', intersect: false }
+                            },
+                            scales: {
+                                x: { ticks: { color: axisColor, maxTicksLimit: 6 }, grid: { color: gridColor } },
+                                y: { beginAtZero: true, ticks: { color: axisColor, maxTicksLimit: 4 }, grid: { color: gridColor } }
                             }
                         }
-                    }
-                });
-            }
-
-            const typesCanvas = document.getElementById('releves-types-chart');
-            if (typesCanvas && chartData.types && chartData.types.labels.length > 0) {
-                new Chart(typesCanvas, {
-                    type: 'doughnut',
-                    data: {
-                        labels: chartData.types.labels,
-                        datasets: [{
-                            data: chartData.types.values,
-                            backgroundColor: chartData.types.colors
-                        }]
-                    },
-                    options: {
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { position: 'bottom', labels: { color: textColor } }
-                        }
-                    }
+                    });
                 });
             }
         })();
