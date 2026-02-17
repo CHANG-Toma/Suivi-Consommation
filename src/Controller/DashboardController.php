@@ -36,6 +36,9 @@ class DashboardController extends AbstractController
         $consommations = $consommationRepository->findBy(['user' => $user], ['dateReleve' => 'DESC']);
         $typesEnergie = $typeEnergieRepository->findAll();
         $alertesRecentes = $alerteRepository->findUnreadByUser($user, 5);
+        $monthStart = new \DateTimeImmutable('first day of this month 00:00:00');
+        $nextMonthStart = $monthStart->modify('+1 month');
+        $monthlyTotalsByType = $consommationRepository->getMonthlyTotalsByType($user, $monthStart, $nextMonthStart);
 
         $dailyCountMap = [];
         $typeCountMap = [];
@@ -85,6 +88,8 @@ class DashboardController extends AbstractController
             'typesEnergie' => $typesEnergie,
             'alertesRecentes' => $alertesRecentes,
             'chartData' => $chartData,
+            'monthlyTotalsByType' => $monthlyTotalsByType,
+            'currentMonthLabel' => $monthStart->format('m/Y'),
         ]);
     }
 }
