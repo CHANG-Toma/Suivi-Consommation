@@ -31,6 +31,10 @@ class Consommation
     #[ORM\JoinColumn(nullable: false)]
     private ?TypeEnergie $typeEnergie = null;
 
+    #[ORM\ManyToOne(inversedBy: 'consommations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Logement $logement = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -97,6 +101,18 @@ class Consommation
     public function setTypeEnergie(?TypeEnergie $typeEnergie): static
     {
         $this->typeEnergie = $typeEnergie;
+
+        return $this;
+    }
+
+    public function getLogement(): ?Logement
+    {
+        return $this->logement;
+    }
+
+    public function setLogement(?Logement $logement): static
+    {
+        $this->logement = $logement;
 
         return $this;
     }

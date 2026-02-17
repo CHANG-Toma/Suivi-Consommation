@@ -55,11 +55,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Alerte::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $alertes;
 
+    /**
+     * @var Collection<int, Logement>
+     */
+    #[ORM\OneToMany(targetEntity: Logement::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $logements;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->consommations = new ArrayCollection();
         $this->alertes = new ArrayCollection();
+        $this->logements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -227,6 +234,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($alerte->getUser() === $this) {
                 $alerte->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Logement>
+     */
+    public function getLogements(): Collection
+    {
+        return $this->logements;
+    }
+
+    public function addLogement(Logement $logement): static
+    {
+        if (!$this->logements->contains($logement)) {
+            $this->logements->add($logement);
+            $logement->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLogement(Logement $logement): static
+    {
+        if ($this->logements->removeElement($logement)) {
+            // set the owning side to null (unless already changed)
+            if ($logement->getUser() === $this) {
+                $logement->setUser(null);
             }
         }
 
