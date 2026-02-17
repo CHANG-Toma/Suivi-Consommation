@@ -21,7 +21,7 @@
         {% if required -%}
             {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
         {%- endif %}
-        <label{% with {attr: label_attr|merge({class: (label_attr.class|default('') ~ ' block text-sm font-medium text-gray-700 mb-1')|trim})} %}{{ block('attributes') }}{% endwith %}>
+        <label{% with {attr: label_attr|merge({class: (label_attr.class|default('') ~ ' block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1')|trim})} %}{{ block('attributes') }}{% endwith %}>
             {{- translation_domain is same as(false) ? label : label|trans(label_translation_parameters, translation_domain) -}}
             {%- if required -%}
                 <span class="text-red-500">*</span>
@@ -32,9 +32,14 @@
 
 {% block form_widget_simple %}
     {% set type = type|default('text') %}
-    {% set attr = attr|merge({class: (attr.class|default('') ~ ' block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm')|trim}) %}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' block w-full rounded-md border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm')|trim}) %}
     <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
 {% endblock form_widget_simple %}
+
+{% block textarea_widget %}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' block w-full rounded-md border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm')|trim}) %}
+    <textarea {{ block('widget_attributes') }}>{{ value }}</textarea>
+{% endblock textarea_widget %}
 
 {% block choice_widget_collapsed %}
     {% set attr = attr|merge({class: (attr.class|default('') ~ ' block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm dark:bg-gray-900 dark:border-gray-700')|trim}) %}
@@ -69,6 +74,6 @@
 
 {% block form_help %}
     {%- if help is not empty -%}
-        <p id="{{ id }}_help" class="mt-1 text-sm text-gray-500">{{ help }}</p>
+        <p id="{{ id }}_help" class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ help }}</p>
     {%- endif -%}
 {% endblock form_help %}
