@@ -7,31 +7,172 @@
     <link rel="stylesheet" href="{{ asset('build/app.css') }}">
     {% block stylesheets %}{% endblock %}
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-900 dark:text-gray-100 transition-colors">
     {% if app.user %}
-        <nav class="bg-white shadow-sm border-b border-gray-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex items-center">
-                        <a href="{{ path('dashboard') }}" class="flex items-center space-x-2">
-                            <span class="text-2xl font-bold text-emerald-500">EcoTrack</span>
-                        </a>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <span class="text-gray-700">{{ app.user.email }}</span>
-                        <a href="{{ path('logout') }}" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                            Déconnexion
-                        </a>
-                    </div>
+        <div class="flex min-h-screen">
+            {# Sidebar #}
+            <aside id="app-sidebar" class="w-72 shrink-0 overflow-hidden flex flex-col bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 shadow-sm transition-all duration-300">
+                {# Logo #}
+                <div class="p-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between gap-3">
+                    <a id="app-brand" href="{{ path('dashboard') }}" class="flex items-center gap-2.5 group min-w-0">
+                        <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500 text-white text-lg font-bold shadow-sm group-hover:bg-emerald-600 transition-colors">E</span>
+                        <span data-sidebar-text class="text-xl font-bold text-gray-800 dark:text-gray-100 group-hover:text-emerald-600 transition-colors truncate">EcoTrack</span>
+                    </a>
+                    <button
+                        id="sidebar-toggle"
+                        type="button"
+                        class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                        aria-controls="app-sidebar"
+                        aria-expanded="true"
+                        aria-label="Fermer le menu"
+                        title="Fermer le menu"
+                    >
+                        <svg id="icon-menu" class="hidden h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                        <svg id="icon-close" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6l-12 12"/>
+                        </svg>
+                    </button>
                 </div>
-            </div>
-        </nav>
+                {# Navigation #}
+                <nav class="flex-1 py-5 px-3">
+                    <p data-sidebar-text class="px-3 mb-3 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Navigation</p>
+                    <ul class="space-y-0.5">
+                        <li>
+                            <a data-sidebar-item href="{{ path('dashboard') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium whitespace-nowrap transition-colors duration-150 {{ app.request.attributes.get('_route') == 'dashboard' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 ring-1 ring-emerald-100 dark:ring-emerald-500/20' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white' }}">
+                                <svg class="h-5 w-5 shrink-0 {{ app.request.attributes.get('_route') == 'dashboard' ? 'text-emerald-500' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                                </svg>
+                                <span data-sidebar-text>Tableau de bord</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                {# Actions #}
+                <div class="p-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
+                    <button id="theme-toggle" type="button" data-sidebar-item class="group w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors duration-150">
+                        <svg id="icon-theme-moon" class="h-5 w-5 shrink-0 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-200 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3c-.4 1.1-.62 2.28-.62 3.5a9 9 0 0010.41 8.29z"/>
+                        </svg>
+                        <svg id="icon-theme-sun" class="hidden h-5 w-5 shrink-0 text-amber-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.36 6.36l-1.41-1.41M7.05 7.05L5.64 5.64m12.72 0l-1.41 1.41M7.05 16.95l-1.41 1.41M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+                        </svg>
+                        <span id="theme-toggle-text" data-sidebar-text>Mode sombre</span>
+                    </button>
+                    <a data-sidebar-item href="{{ path('logout') }}" class="group mt-1 flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-300 transition-colors duration-150">
+                        <svg class="h-5 w-5 shrink-0 text-gray-400 group-hover:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        <span data-sidebar-text>Déconnexion</span>
+                    </a>
+                </div>
+            </aside>
+            {# Contenu principal #}
+            <main class="flex-1 overflow-auto">
+    {% else %}
+        <main class="min-h-screen flex items-center justify-center">
+    {% endif %}
+                {% if app.user %}
+                    <header class="sticky top-0 z-10 border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-950/90 backdrop-blur px-6 lg:px-8 py-3">
+                        <div class="flex items-center justify-end">
+                            <div class="inline-flex items-center gap-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 shadow-sm">
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-sm font-semibold">
+                                    {{ app.user.email|slice(0, 1)|upper }}
+                                </span>
+                                <div class="min-w-0">
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Connecté</p>
+                                    <p class="text-sm font-medium text-gray-700 dark:text-gray-200 truncate max-w-[220px]" title="{{ app.user.email }}">{{ app.user.email }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+                    <div class="py-6 px-6 lg:px-8">
+                {% endif %}
+                {% block body %}{% endblock %}
+                {% if app.user %}
+                    </div>
+                {% endif %}
+            </main>
+    {% if app.user %}
+        </div>
     {% endif %}
 
-    <main class="{% if app.user %}max-w-7xl mx-auto py-6 sm:px-6 lg:px-8{% else %}min-h-screen flex items-center justify-center{% endif %}">
-        {% block body %}{% endblock %}
-    </main>
+    {% if app.user %}
+        <script>
+            (function () {
+                const sidebar = document.getElementById('app-sidebar');
+                const toggle = document.getElementById('sidebar-toggle');
+                const menuIcon = document.getElementById('icon-menu');
+                const closeIcon = document.getElementById('icon-close');
+                const themeToggle = document.getElementById('theme-toggle');
+                const themeText = document.getElementById('theme-toggle-text');
+                const themeMoonIcon = document.getElementById('icon-theme-moon');
+                const themeSunIcon = document.getElementById('icon-theme-sun');
+                const brand = document.getElementById('app-brand');
+                const textNodes = document.querySelectorAll('[data-sidebar-text]');
+                const itemNodes = document.querySelectorAll('[data-sidebar-item]');
+                const storageKey = 'ecotrack.sidebar.collapsed';
+                const themeStorageKey = 'ecotrack.theme.dark';
+                const root = document.documentElement;
 
+                if (!sidebar || !toggle || !menuIcon || !closeIcon) return;
+
+                const setCollapsed = (collapsed) => {
+                    sidebar.classList.toggle('w-72', !collapsed);
+                    sidebar.classList.toggle('w-20', collapsed);
+                    sidebar.classList.toggle('border-r', !collapsed);
+                    toggle.setAttribute('aria-expanded', String(!collapsed));
+                    toggle.setAttribute('aria-label', collapsed ? 'Ouvrir le menu' : 'Fermer le menu');
+                    toggle.setAttribute('title', collapsed ? 'Ouvrir le menu' : 'Fermer le menu');
+                    menuIcon.classList.toggle('hidden', !collapsed);
+                    closeIcon.classList.toggle('hidden', collapsed);
+                    textNodes.forEach((node) => node.classList.toggle('hidden', collapsed));
+                    itemNodes.forEach((node) => {
+                        node.classList.toggle('justify-center', collapsed);
+                    });
+                    if (brand) {
+                        brand.classList.toggle('justify-center', collapsed);
+                    }
+                };
+
+                const setDarkTheme = (isDark) => {
+                    root.classList.toggle('dark', isDark);
+                    if (themeText) {
+                        themeText.textContent = isDark ? 'Mode clair' : 'Mode sombre';
+                    }
+                    if (themeMoonIcon) {
+                        themeMoonIcon.classList.toggle('hidden', isDark);
+                    }
+                    if (themeSunIcon) {
+                        themeSunIcon.classList.toggle('hidden', !isDark);
+                    }
+                };
+
+                const initialCollapsed = localStorage.getItem(storageKey) === 'true';
+                setCollapsed(initialCollapsed);
+                const savedTheme = localStorage.getItem(themeStorageKey);
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                setDarkTheme(savedTheme ? savedTheme === 'true' : prefersDark);
+
+                toggle.addEventListener('click', () => {
+                    const collapsed = sidebar.classList.contains('w-20');
+                    const nextCollapsed = !collapsed;
+                    setCollapsed(nextCollapsed);
+                    localStorage.setItem(storageKey, String(nextCollapsed));
+                });
+
+                if (themeToggle) {
+                    themeToggle.addEventListener('click', () => {
+                        const isDark = root.classList.contains('dark');
+                        const next = !isDark;
+                        setDarkTheme(next);
+                        localStorage.setItem(themeStorageKey, String(next));
+                    });
+                }
+            })();
+        </script>
+    {% endif %}
     {% block javascripts %}{% endblock %}
 </body>
 </html>
