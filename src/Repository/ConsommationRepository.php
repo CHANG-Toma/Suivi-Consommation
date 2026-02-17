@@ -30,4 +30,34 @@ class ConsommationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return array<int, float> map [typeEnergieId => total]
+     */
+    public function getMonthlyTotalsByType(User $user, \DateTimeInterface $monthStart, \DateTimeInterface $nextMonthStart): array
+    {
+        $rows = $this->createQueryBuilder('c')
+            ->select('IDENTITY(c.typeEnergie) AS typeId, SUM(c.valeur) AS total')
+            ->andWhere('c.user = :user')
+            ->andWhere('c.dateReleve >= :monthStart')
+            ->andWhere('c.dateReleve < :nextMonthStart')
+            ->setParameter('user', $user)
+            ->setParameter('monthStart', $monthStart)
+            ->setParameter('nextMonthStart', $nextMonthStart)
+            ->groupBy('c.typeEnergie')
+            ->getQuery()
+            ->getArrayResult();
+
+        $totals = [];
+        foreach ($rows as $row) {
+            $typeId = (int) ($row['typeId'] ?? 0);
+            if ($typeId <= 0) {
+                continue;
+            }
+
+            $totals[$typeId] = (float) ($row['total'] ?? 0);
+        }
+
+        return $totals;
+    }
 }
