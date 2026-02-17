@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}EcoTrack - Suivi de consommation énergétique{% endblock %}</title>
+    <title>{% block title %}EcoTrack - Suivi de relevés énergétiques{% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('build/app.css') }}">
     {% block stylesheets %}{% endblock %}
 </head>
@@ -62,7 +62,7 @@
                                 <svg class="h-5 w-5 shrink-0 {{ isConsommationRoute ? 'text-emerald-500' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6m4 6V7m4 10v-3M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                                 </svg>
-                                <span data-sidebar-text>Consommations</span>
+                                <span data-sidebar-text>Relevés</span>
                             </a>
                         </li>
                         <li>

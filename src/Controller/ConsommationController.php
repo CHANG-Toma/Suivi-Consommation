@@ -44,7 +44,7 @@ class ConsommationController extends AbstractController
         }
 
         if (\count($logementRepository->findByUser($user)) === 0) {
-            $this->addFlash('error', 'Ajoutez d\'abord un logement avant de saisir une consommation.');
+            $this->addFlash('error', 'Ajoutez d\'abord un logement avant de saisir un relevé.');
 
             return $this->redirectToRoute('logement_new');
         }
@@ -61,7 +61,7 @@ class ConsommationController extends AbstractController
             $entityManager->flush();
             $this->handleTriggeredAlerts($consommation, $alerteRepository, $entityManager);
 
-            $this->addFlash('success', 'La consommation a bien été enregistrée.');
+            $this->addFlash('success', 'Le relevé a bien été enregistré.');
 
             return $this->redirectToRoute('consommation_index');
         }
@@ -103,7 +103,7 @@ class ConsommationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
             $this->handleTriggeredAlerts($consommation, $alerteRepository, $entityManager);
-            $this->addFlash('success', 'La consommation a bien été modifiée.');
+            $this->addFlash('success', 'Le relevé a bien été modifié.');
 
             return $this->redirectToRoute('consommation_index');
         }
@@ -122,7 +122,7 @@ class ConsommationController extends AbstractController
         if ($this->isCsrfTokenValid('delete_consommation_'.$consommation->getId(), (string) $request->request->get('_token'))) {
             $entityManager->remove($consommation);
             $entityManager->flush();
-            $this->addFlash('success', 'La consommation a bien été supprimée.');
+            $this->addFlash('success', 'Le relevé a bien été supprimé.');
         } else {
             $this->addFlash('error', 'Action invalide, veuillez réessayer.');
         }

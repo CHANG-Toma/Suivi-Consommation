@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mes consommations - EcoTrack{% endblock %}
+{% block title %}Mes relevés - EcoTrack{% endblock %}
 
 {% block body %}
 <div class="px-4 py-6 sm:px-0">
     <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Mes consommations</h1>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Mes relevés</h1>
             <p class="text-gray-600 dark:text-gray-300">Renseignez, consultez et mettez à jour vos relevés.</p>
         </div>
         <a href="{{ path('consommation_new') }}" class="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
-            Ajouter une consommation
+            Ajouter un relevé
         </a>
     </div>
 
@@ -65,10 +65,10 @@
         </div>
     {% else %}
         <div class="rounded-xl border border-dashed border-gray-300 bg-white px-6 py-12 text-center dark:border-gray-700 dark:bg-gray-900">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Aucune consommation pour le moment</h2>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Aucun relevé pour le moment</h2>
             <p class="text-gray-600 dark:text-gray-300 mb-5">Ajoutez votre premier relevé pour suivre votre énergie.</p>
             <a href="{{ path('consommation_new') }}" class="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-600">
-                Ajouter ma première consommation
+                Ajouter mon premier relevé
             </a>
         </div>
     {% endif %}

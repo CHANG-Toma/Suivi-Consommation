@@ -6,7 +6,7 @@
 <div class="px-4 py-6 sm:px-0">
     <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Tableau de bord</h1>
-        <p class="text-gray-600 dark:text-gray-300">Suivez votre consommation énergétique</p>
+        <p class="text-gray-600 dark:text-gray-300">Suivez vos relevés énergétiques</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -25,9 +25,35 @@
         {% endfor %}
     </div>
 
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+        <div class="xl:col-span-2 bg-white dark:bg-gray-900 rounded-lg shadow border border-gray-100 dark:border-gray-800">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Évolution des relevés</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Nombre de relevés saisis par date</p>
+            </div>
+            <div class="p-6">
+                <div class="h-72">
+                    <canvas id="releves-trend-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-900 rounded-lg shadow border border-gray-100 dark:border-gray-800">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Répartition par type</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Volume de relevés par énergie</p>
+            </div>
+            <div class="p-6">
+                <div class="h-72">
+                    <canvas id="releves-types-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="bg-white dark:bg-gray-900 rounded-lg shadow border border-gray-100 dark:border-gray-800">
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Mes consommations</h2>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Mes relevés</h2>
         </div>
         <div class="p-6">
             {% if consommations|length > 0 %}
@@ -59,9 +85,9 @@
                 </div>
             {% else %}
                 <div class="text-center py-12">
-                    <p class="text-gray-500 dark:text-gray-300 mb-4">Aucune consommation enregistrée pour le moment.</p>
+                    <p class="text-gray-500 dark:text-gray-300 mb-4">Aucun relevé enregistré pour le moment.</p>
                     <a href="{{ path('consommation_new') }}" class="inline-flex items-center px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600">
-                        Ajouter une consommation
+                        Ajouter un relevé
                     </a>
                 </div>
             {% endif %}
@@ -94,4 +120,72 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        (function () {
+            const chartData = {{ chartData|json_encode|raw }};
+            if (!chartData) return;
+
+            const isDark = document.documentElement.classList.contains('dark');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(17, 24, 39, 0.10)';
+            const textColor = isDark ? '#D1D5DB' : '#374151';
+
+            const trendCanvas = document.getElementById('releves-trend-chart');
+            if (trendCanvas && chartData.daily && chartData.daily.labels.length > 0) {
+                new Chart(trendCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.daily.labels,
+                        datasets: [{
+                            label: 'Relevés',
+                            data: chartData.daily.values,
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.18)',
+                            fill: true,
+                            tension: 0.28,
+                            pointRadius: 3
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: textColor } }
+                        },
+                        scales: {
+                            x: { ticks: { color: textColor }, grid: { color: gridColor } },
+                            y: {
+                                beginAtZero: true,
+                                ticks: { color: textColor, precision: 0 },
+                                grid: { color: gridColor }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const typesCanvas = document.getElementById('releves-types-chart');
+            if (typesCanvas && chartData.types && chartData.types.labels.length > 0) {
+                new Chart(typesCanvas, {
+                    type: 'doughnut',
+                    data: {
+                        labels: chartData.types.labels,
+                        datasets: [{
+                            data: chartData.types.values,
+                            backgroundColor: chartData.types.colors
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { color: textColor } }
+                        }
+                    }
+                });
+            }
+        })();
+    </script>
 {% endblock %}
