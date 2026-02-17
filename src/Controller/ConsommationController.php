@@ -41,7 +41,7 @@ class ConsommationController extends AbstractController
         }
 
         if (\count($logementRepository->findByUser($user)) === 0) {
-            $this->addFlash('error', 'Ajoutez d abord un logement avant de saisir une consommation.');
+            $this->addFlash('error', 'Ajoutez d\'abord un logement avant de saisir une consommation.');
 
             return $this->redirectToRoute('logement_new');
         }
@@ -57,7 +57,7 @@ class ConsommationController extends AbstractController
             $entityManager->persist($consommation);
             $entityManager->flush();
 
-            $this->addFlash('success', 'La consommation a bien ete enregistree.');
+            $this->addFlash('success', 'La consommation a bien été enregistrée.');
 
             return $this->redirectToRoute('consommation_index');
         }
@@ -97,7 +97,7 @@ class ConsommationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-            $this->addFlash('success', 'La consommation a bien ete modifiee.');
+            $this->addFlash('success', 'La consommation a bien été modifiée.');
 
             return $this->redirectToRoute('consommation_index');
         }
@@ -116,9 +116,9 @@ class ConsommationController extends AbstractController
         if ($this->isCsrfTokenValid('delete_consommation_'.$consommation->getId(), (string) $request->request->get('_token'))) {
             $entityManager->remove($consommation);
             $entityManager->flush();
-            $this->addFlash('success', 'La consommation a bien ete supprimee.');
+            $this->addFlash('success', 'La consommation a bien été supprimée.');
         } else {
-            $this->addFlash('error', 'Action invalide, veuillez reessayer.');
+            $this->addFlash('error', 'Action invalide, veuillez réessayer.');
         }
 
         return $this->redirectToRoute('consommation_index');

@@ -32,7 +32,7 @@ class ConsommationType extends AbstractType
                 'class' => Logement::class,
                 'choice_label' => 'nom',
                 'label' => 'Logement',
-                'placeholder' => 'Selectionner un logement',
+                'placeholder' => 'Sélectionner un logement',
                 'query_builder' => fn () => $this->logementRepository
                     ->createQueryBuilder('l')
                     ->andWhere('l.user = :user')
@@ -40,7 +40,7 @@ class ConsommationType extends AbstractType
                     ->orderBy('l.nom', 'ASC'),
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Veuillez selectionner un logement.',
+                        'message' => 'Veuillez sélectionner un logement.',
                     ]),
                 ],
             ])
@@ -51,16 +51,16 @@ class ConsommationType extends AbstractType
                     $typeEnergie->getNom() ?? '',
                     $typeEnergie->getUnite() ?? 'kWh'
                 ),
-                'label' => 'Type d energie',
-                'placeholder' => 'Selectionner un type d energie',
+                'label' => 'Type d\'énergie',
+                'placeholder' => 'Sélectionner un type d\'énergie',
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Veuillez selectionner un type d energie.',
+                        'message' => 'Veuillez sélectionner un type d\'énergie.',
                     ]),
                 ],
             ])
             ->add('valeur', NumberType::class, [
-                'label' => 'Valeur relevee',
+                'label' => 'Valeur relevée',
                 'scale' => 2,
                 'html5' => true,
                 'attr' => [
@@ -77,12 +77,12 @@ class ConsommationType extends AbstractType
                 ],
             ])
             ->add('dateReleve', DateType::class, [
-                'label' => 'Date du releve',
+                'label' => 'Date du relevé',
                 'widget' => 'single_text',
                 'input' => 'datetime',
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Veuillez renseigner la date du releve.',
+                        'message' => 'Veuillez renseigner la date du relevé.',
                     ]),
                 ],
             ]);
