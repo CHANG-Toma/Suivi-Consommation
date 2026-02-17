@@ -65,6 +65,15 @@
                                 <span data-sidebar-text>Consommations</span>
                             </a>
                         </li>
+                        <li>
+                            {% set isAlerteRoute = app.request.attributes.get('_route') starts with 'alerte_' %}
+                            <a data-sidebar-item href="{{ path('alerte_index') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium whitespace-nowrap transition-colors duration-150 {{ isAlerteRoute ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 ring-1 ring-emerald-100 dark:ring-emerald-500/20' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white' }}">
+                                <svg class="h-5 w-5 shrink-0 {{ isAlerteRoute ? 'text-emerald-500' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.17V11a6 6 0 10-12 0v3.17c0 .53-.21 1.04-.59 1.43L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                                </svg>
+                                <span data-sidebar-text>Alertes</span>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
                 {# Actions #}
@@ -117,6 +126,36 @@
     {% endif %}
 
     {% if app.user %}
+        {% set warningPopups = app.flashes('warning_popup') %}
+        {% if warningPopups|length > 0 %}
+            <div id="warning-popup-overlay" class="fixed inset-0 z-40 bg-gray-900/50 backdrop-blur-sm"></div>
+            <div id="warning-popup-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div class="w-full max-w-xl rounded-xl border border-amber-200 bg-white shadow-xl dark:border-amber-500/30 dark:bg-gray-900">
+                    <div class="border-b border-amber-200 bg-amber-50 px-5 py-4 dark:border-amber-500/30 dark:bg-amber-500/10">
+                        <h3 class="text-lg font-semibold text-amber-800 dark:text-amber-300">Seuil d'alerte atteint</h3>
+                    </div>
+                    <div class="px-5 py-4">
+                        <ul class="space-y-2">
+                            {% for popupMessage in warningPopups %}
+                                <li class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+                                    {{ popupMessage }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="flex justify-end gap-2 border-t border-gray-200 px-5 py-3 dark:border-gray-800">
+                        <button
+                            id="warning-popup-close"
+                            type="button"
+                            class="inline-flex items-center rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-600"
+                        >
+                            Compris
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
         <script>
             (function () {
                 const sidebar = document.getElementById('app-sidebar');
@@ -187,6 +226,20 @@
                         setDarkTheme(next);
                         localStorage.setItem(themeStorageKey, String(next));
                     });
+                }
+
+                const popupOverlay = document.getElementById('warning-popup-overlay');
+                const popupModal = document.getElementById('warning-popup-modal');
+                const popupClose = document.getElementById('warning-popup-close');
+                const closePopup = () => {
+                    if (popupOverlay) popupOverlay.remove();
+                    if (popupModal) popupModal.remove();
+                };
+                if (popupClose) {
+                    popupClose.addEventListener('click', closePopup);
+                }
+                if (popupOverlay) {
+                    popupOverlay.addEventListener('click', closePopup);
                 }
             })();
         </script>

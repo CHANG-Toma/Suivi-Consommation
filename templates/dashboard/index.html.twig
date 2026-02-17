@@ -67,5 +67,31 @@
             {% endif %}
         </div>
     </div>
+
+    <div class="mt-8 bg-white dark:bg-gray-900 rounded-lg shadow border border-gray-100 dark:border-gray-800">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-3">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Alertes récentes</h2>
+            <a href="{{ path('alerte_index') }}" class="text-sm font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300">Voir toutes les alertes</a>
+        </div>
+        <div class="p-6">
+            {% if alertesRecentes|length > 0 %}
+                <ul class="space-y-3">
+                    {% for alerte in alertesRecentes %}
+                        <li class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-500/20 dark:bg-amber-500/10">
+                            <p class="text-sm font-semibold text-amber-900 dark:text-amber-200">{{ alerte.titre }}</p>
+                            <p class="text-xs text-amber-800/80 dark:text-amber-300/80 mt-1">{{ alerte.logement.nom }} · {{ alerte.createdAt|date('d/m/Y H:i') }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="text-center py-6">
+                    <p class="text-gray-500 dark:text-gray-300 mb-4">Aucune alerte non lue.</p>
+                    <a href="{{ path('alerte_new') }}" class="inline-flex items-center px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600">
+                        Créer une alerte
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock %}

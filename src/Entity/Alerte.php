@@ -80,9 +80,9 @@ class Alerte
         return $this->seuil;
     }
 
-    public function setSeuil(?string $seuil): static
+    public function setSeuil(string|int|float|null $seuil): static
     {
-        $this->seuil = $seuil;
+        $this->seuil = null === $seuil ? null : (string) $seuil;
 
         return $this;
     }
