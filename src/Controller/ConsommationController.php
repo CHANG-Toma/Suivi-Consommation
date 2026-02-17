@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Alerte;
 use App\Entity\Consommation;
 use App\Entity\User;
 use App\Form\ConsommationType;
+use App\Repository\AlerteRepository;
 use App\Repository\ConsommationRepository;
 use App\Repository\LogementRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,7 +35,8 @@ class ConsommationController extends AbstractController
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
-        LogementRepository $logementRepository
+        LogementRepository $logementRepository,
+        AlerteRepository $alerteRepository
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -41,7 +44,7 @@ class ConsommationController extends AbstractController
         }
 
         if (\count($logementRepository->findByUser($user)) === 0) {
-            $this->addFlash('error', 'Ajoutez d abord un logement avant de saisir une consommation.');
+            $this->addFlash('error', 'Ajoutez d\'abord un logement avant de saisir une consommation.');
 
             return $this->redirectToRoute('logement_new');
         }
@@ -56,8 +59,9 @@ class ConsommationController extends AbstractController
             $consommation->setUser($user);
             $entityManager->persist($consommation);
             $entityManager->flush();
+            $this->handleTriggeredAlerts($consommation, $alerteRepository, $entityManager);
 
-            $this->addFlash('success', 'La consommation a bien ete enregistree.');
+            $this->addFlash('success', 'La consommation a bien été enregistrée.');
 
             return $this->redirectToRoute('consommation_index');
         }
@@ -81,7 +85,8 @@ class ConsommationController extends AbstractController
     public function edit(
         Request $request,
         Consommation $consommation,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        AlerteRepository $alerteRepository
     ): Response {
         $this->denyUnlessOwner($consommation);
 
@@ -97,7 +102,8 @@ class ConsommationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-            $this->addFlash('success', 'La consommation a bien ete modifiee.');
+            $this->handleTriggeredAlerts($consommation, $alerteRepository, $entityManager);
+            $this->addFlash('success', 'La consommation a bien été modifiée.');
 
             return $this->redirectToRoute('consommation_index');
         }
@@ -116,9 +122,9 @@ class ConsommationController extends AbstractController
         if ($this->isCsrfTokenValid('delete_consommation_'.$consommation->getId(), (string) $request->request->get('_token'))) {
             $entityManager->remove($consommation);
             $entityManager->flush();
-            $this->addFlash('success', 'La consommation a bien ete supprimee.');
+            $this->addFlash('success', 'La consommation a bien été supprimée.');
         } else {
-            $this->addFlash('error', 'Action invalide, veuillez reessayer.');
+            $this->addFlash('error', 'Action invalide, veuillez réessayer.');
         }
 
         return $this->redirectToRoute('consommation_index');
@@ -133,6 +139,58 @@ class ConsommationController extends AbstractController
 
         if ($consommation->getUser()?->getId() !== $user->getId()) {
             throw $this->createNotFoundException();
+        }
+    }
+
+    private function handleTriggeredAlerts(
+        Consommation $consommation,
+        AlerteRepository $alerteRepository,
+        EntityManagerInterface $entityManager
+    ): void {
+        $user = $consommation->getUser();
+        $logement = $consommation->getLogement();
+        if (!$user instanceof User || null === $logement || null === $consommation->getValeur()) {
+            return;
+        }
+
+        $triggeredAlerts = $alerteRepository->findTriggeredByConsumption(
+            $user,
+            $logement,
+            $consommation->getTypeEnergie(),
+            (float) $consommation->getValeur()
+        );
+
+        if (\count($triggeredAlerts) === 0) {
+            return;
+        }
+
+        $hasChanges = false;
+        foreach ($triggeredAlerts as $alert) {
+            if (!$alert instanceof Alerte) {
+                continue;
+            }
+
+            if ($alert->isLu()) {
+                $alert->setLu(false);
+                $hasChanges = true;
+            }
+
+            $labelType = $alert->getTypeEnergie()?->getNom() ?? 'Tous types';
+            $this->addFlash(
+                'warning_popup',
+                sprintf(
+                    'Alerte "%s" déclenchée: %s a atteint %.2f%s (seuil: %s).',
+                    $alert->getTitre(),
+                    $labelType,
+                    (float) $consommation->getValeur(),
+                    $consommation->getTypeEnergie()?->getUnite() ? ' '.$consommation->getTypeEnergie()->getUnite() : '',
+                    $alert->getSeuil()
+                )
+            );
+        }
+
+        if ($hasChanges) {
+            $entityManager->flush();
         }
     }
 }

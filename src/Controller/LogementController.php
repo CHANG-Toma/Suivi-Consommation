@@ -48,7 +48,7 @@ class LogementController extends AbstractController
             $entityManager->persist($logement);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Le logement a bien ete ajoute.');
+            $this->addFlash('success', 'Le logement a bien été ajouté.');
 
             return $this->redirectToRoute('logement_index');
         }
@@ -79,7 +79,7 @@ class LogementController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            $this->addFlash('success', 'Le logement a bien ete modifie.');
+            $this->addFlash('success', 'Le logement a bien été modifié.');
 
             return $this->redirectToRoute('logement_index');
         }
@@ -98,9 +98,9 @@ class LogementController extends AbstractController
         if ($this->isCsrfTokenValid('delete_logement_'.$logement->getId(), (string) $request->request->get('_token'))) {
             $entityManager->remove($logement);
             $entityManager->flush();
-            $this->addFlash('success', 'Le logement a bien ete supprime.');
+            $this->addFlash('success', 'Le logement a bien été supprimé.');
         } else {
-            $this->addFlash('error', 'Action invalide, veuillez reessayer.');
+            $this->addFlash('error', 'Action invalide, veuillez réessayer.');
         }
 
         return $this->redirectToRoute('logement_index');

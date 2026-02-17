@@ -22,7 +22,7 @@ class LogementType extends AbstractType
                     new NotBlank([
                         'message' => 'Veuillez renseigner un nom pour ce logement.',
                     ]),
-                    new Length(max: 255, maxMessage: 'Le nom ne peut pas depasser {{ limit }} caracteres.'),
+                    new Length(max: 255, maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères.'),
                 ],
                 'attr' => [
                     'placeholder' => 'Appartement principal',
@@ -34,10 +34,10 @@ class LogementType extends AbstractType
                     new NotBlank([
                         'message' => 'Veuillez renseigner une adresse.',
                     ]),
-                    new Length(max: 255, maxMessage: 'L adresse ne peut pas depasser {{ limit }} caracteres.'),
+                    new Length(max: 255, maxMessage: 'L\'adresse ne peut pas dépasser {{ limit }} caractères.'),
                 ],
                 'attr' => [
-                    'placeholder' => '12 Rue des Erables, 75000 Paris',
+                    'placeholder' => '12 Rue des Érables, 75000 Paris',
                 ],
             ]);
     }

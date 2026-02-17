@@ -19,7 +19,7 @@ class TypeEnergieFixtures extends Fixture
             ],
             [
                 'nom' => 'Gaz',
-                'unite' => 'kWh',
+                'unite' => 'm³',
                 'couleur' => '#F97316',
                 'icone' => '🔥',
             ],
