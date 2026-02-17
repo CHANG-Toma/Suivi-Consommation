@@ -50,9 +50,9 @@ class Consommation
         return $this->valeur;
     }
 
-    public function setValeur(string $valeur): static
+    public function setValeur(string|int|float $valeur): static
     {
-        $this->valeur = $valeur;
+        $this->valeur = (string) $valeur;
 
         return $this;
     }

@@ -1,0 +1,15 @@
+{{ form_start(form, {'attr': {'class': 'space-y-1 text-gray-900 dark:text-gray-100'}}) }}
+    {{ form_row(form.logement) }}
+    {{ form_row(form.typeEnergie) }}
+    {{ form_row(form.valeur) }}
+    {{ form_row(form.dateReleve) }}
+
+    <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <a href="{{ path('consommation_index') }}" class="inline-flex items-center justify-center rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">
+            Annuler
+        </a>
+        <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+            {{ button_label|default('Enregistrer la consommation') }}
+        </button>
+    </div>
+{{ form_end(form) }}

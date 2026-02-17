@@ -56,6 +56,15 @@
                                 <span data-sidebar-text>Mes logements</span>
                             </a>
                         </li>
+                        <li>
+                            {% set isConsommationRoute = app.request.attributes.get('_route') starts with 'consommation_' %}
+                            <a data-sidebar-item href="{{ path('consommation_index') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium whitespace-nowrap transition-colors duration-150 {{ isConsommationRoute ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 ring-1 ring-emerald-100 dark:ring-emerald-500/20' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white' }}">
+                                <svg class="h-5 w-5 shrink-0 {{ isConsommationRoute ? 'text-emerald-500' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6m4 6V7m4 10v-3M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                </svg>
+                                <span data-sidebar-text>Consommations</span>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
                 {# Actions #}
