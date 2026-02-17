@@ -9,9 +9,9 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-900 dark:text-gray-100 transition-colors">
     {% if app.user %}
-        <div class="flex min-h-screen">
+        <div class="flex h-screen overflow-hidden">
             {# Sidebar #}
-            <aside id="app-sidebar" class="w-72 shrink-0 overflow-hidden flex flex-col bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 shadow-sm transition-all duration-300">
+            <aside id="app-sidebar" class="h-screen w-72 shrink-0 overflow-hidden flex flex-col bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 shadow-sm transition-all duration-300">
                 {# Logo #}
                 <div class="p-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between gap-3">
                     <a id="app-brand" href="{{ path('dashboard') }}" class="flex items-center gap-2.5 group min-w-0">
@@ -96,22 +96,19 @@
                 </div>
             </aside>
             {# Contenu principal #}
-            <main class="flex-1 overflow-auto">
+            <main class="flex-1 overflow-y-auto">
     {% else %}
         <main class="min-h-screen flex items-center justify-center">
     {% endif %}
                 {% if app.user %}
                     <header class="sticky top-0 z-10 border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-950/90 backdrop-blur px-6 lg:px-8 py-3">
                         <div class="flex items-center justify-end">
-                            <div class="inline-flex items-center gap-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 shadow-sm">
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-sm font-semibold">
-                                    {{ app.user.email|slice(0, 1)|upper }}
-                                </span>
-                                <div class="min-w-0">
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Connecté</p>
-                                    <p class="text-sm font-medium text-gray-700 dark:text-gray-200 truncate max-w-[220px]" title="{{ app.user.email }}">{{ app.user.email }}</p>
-                                </div>
-                            </div>
+                            <a href="{{ path('profile_index') }}" class="mr-3 inline-flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9 9 0 1118.88 17.8M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                Mon Profile
+                            </a>
                         </div>
                     </header>
                     <div class="py-6 px-6 lg:px-8">
