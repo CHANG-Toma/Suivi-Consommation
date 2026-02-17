@@ -5,6 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}EcoTrack - Suivi de relevés énergétiques{% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+    <style>
+        .app-card {
+            transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+        }
+
+        .app-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 28px rgba(2, 8, 23, 0.08);
+        }
+
+        [data-app-reveal] {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 420ms ease, transform 420ms ease;
+            will-change: opacity, transform;
+        }
+
+        [data-app-reveal].is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .app-card,
+            [data-app-reveal] {
+                transition: none !important;
+                transform: none !important;
+                opacity: 1 !important;
+            }
+        }
+    </style>
     {% block stylesheets %}{% endblock %}
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-900 dark:text-gray-100 transition-colors">
@@ -98,7 +129,8 @@
             {# Contenu principal #}
             <main class="flex-1 overflow-y-auto">
     {% else %}
-        <main class="min-h-screen flex items-center justify-center">
+        {% set isPublicHome = app.request.attributes.get('_route') == 'home' %}
+        <main class="{{ isPublicHome ? 'min-h-screen' : 'min-h-screen flex items-center justify-center' }}">
     {% endif %}
                 {% if app.user %}
                     <header class="sticky top-0 z-10 border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-950/90 backdrop-blur px-6 lg:px-8 py-3">
@@ -237,6 +269,24 @@
                 }
                 if (popupOverlay) {
                     popupOverlay.addEventListener('click', closePopup);
+                }
+
+                const revealNodes = document.querySelectorAll('[data-app-reveal]');
+                if (revealNodes.length > 0 && 'IntersectionObserver' in window) {
+                    const revealObserver = new IntersectionObserver((entries, obs) => {
+                        entries.forEach((entry) => {
+                            if (!entry.isIntersecting) return;
+                            entry.target.classList.add('is-visible');
+                            obs.unobserve(entry.target);
+                        });
+                    }, { threshold: 0.12 });
+
+                    revealNodes.forEach((node, index) => {
+                        node.style.transitionDelay = `${Math.min(index * 25, 220)}ms`;
+                        revealObserver.observe(node);
+                    });
+                } else {
+                    revealNodes.forEach((node) => node.classList.add('is-visible'));
                 }
             })();
         </script>

@@ -1,0 +1,310 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EcoTrack - Suivi énergétique intelligent{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .home-hero {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .home-blob {
+            position: absolute;
+            border-radius: 9999px;
+            filter: blur(60px);
+            opacity: 0.45;
+            pointer-events: none;
+            z-index: -1;
+            transition: transform 200ms ease-out;
+        }
+
+        .home-blob-a {
+            width: 380px;
+            height: 380px;
+            top: -120px;
+            right: -80px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.55), rgba(16, 185, 129, 0));
+        }
+
+        .home-blob-b {
+            width: 320px;
+            height: 320px;
+            bottom: 8%;
+            left: -120px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.45), rgba(59, 130, 246, 0));
+        }
+
+        .f-card {
+            position: relative;
+            overflow: hidden;
+            transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+            backdrop-filter: blur(6px);
+        }
+
+        .f-card::before {
+            content: "";
+            position: absolute;
+            inset: -40%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.16), rgba(16, 185, 129, 0));
+            opacity: 0;
+            transition: opacity 180ms ease;
+            pointer-events: none;
+        }
+
+        .f-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 30px rgba(2, 8, 23, 0.12);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+
+        .f-card:hover::before {
+            opacity: 1;
+        }
+
+        [data-reveal] {
+            opacity: 0;
+            transform: translateY(20px) scale(0.99);
+            transition: opacity 450ms ease, transform 450ms ease;
+        }
+
+        [data-reveal].is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<section class="home-hero min-h-screen bg-gradient-to-b from-emerald-50 to-white dark:from-gray-950 dark:to-gray-900">
+    <div id="home-blob-a" class="home-blob home-blob-a"></div>
+    <div id="home-blob-b" class="home-blob home-blob-b"></div>
+    <div class="mx-auto max-w-6xl px-6 py-10 lg:px-8">
+        <header class="mb-16 flex flex-wrap items-center justify-between gap-4" data-reveal>
+            <div class="flex items-center gap-3">
+                <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500 text-lg font-bold text-white shadow-sm">E</span>
+                <span class="text-xl font-bold text-gray-900 dark:text-gray-100">EcoTrack</span>
+            </div>
+            <nav class="hidden items-center gap-6 md:flex">
+                <a href="#fonctionnalites" class="text-sm font-medium text-gray-600 transition hover:text-emerald-600 dark:text-gray-300 dark:hover:text-emerald-300">Fonctionnalités</a>
+                <a href="#comment-ca-marche" class="text-sm font-medium text-gray-600 transition hover:text-emerald-600 dark:text-gray-300 dark:hover:text-emerald-300">Comment ça marche</a>
+                <a href="#faq" class="text-sm font-medium text-gray-600 transition hover:text-emerald-600 dark:text-gray-300 dark:hover:text-emerald-300">FAQ</a>
+            </nav>
+            <div class="flex items-center gap-3">
+                <a href="{{ path('login') }}" class="inline-flex items-center rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">
+                    Se connecter
+                </a>
+                <a href="{{ path('register') }}" class="inline-flex items-center rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-600">
+                    Créer un compte
+                </a>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center" data-reveal>
+            <div>
+                <span class="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
+                    Nouvelle façon de suivre votre énergie
+                </span>
+                <h1 class="mt-4 text-4xl font-extrabold leading-tight text-gray-900 dark:text-gray-100 sm:text-5xl">
+                    Pilotez vos relevés énergétiques en toute simplicité.
+                </h1>
+                <p class="mt-5 text-lg text-gray-600 dark:text-gray-300">
+                    Centralisez vos logements, suivez vos relevés, visualisez vos tendances
+                    et soyez alerté dès qu'un seuil est dépassé.
+                </p>
+                <div class="mt-8 flex flex-wrap gap-3">
+                    <a href="{{ path('register') }}" class="inline-flex items-center rounded-lg bg-emerald-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600">
+                        Commencer gratuitement
+                    </a>
+                    <a href="{{ path('login') }}" class="inline-flex items-center rounded-lg border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">
+                        J'ai déjà un compte
+                    </a>
+                </div>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+                <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                    <h3 class="text-sm font-semibold text-emerald-600 dark:text-emerald-300">Tableau de bord</h3>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Vue claire de vos consommations mensuelles par énergie.</p>
+                </article>
+                <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                    <h3 class="text-sm font-semibold text-emerald-600 dark:text-emerald-300">Graphiques intelligents</h3>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Analyse visuelle de vos relevés par jour et par type d'énergie.</p>
+                </article>
+                <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                    <h3 class="text-sm font-semibold text-emerald-600 dark:text-emerald-300">Alertes personnalisées</h3>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Recevez des avertissements dès qu'un seuil défini est atteint.</p>
+                </article>
+                <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                    <h3 class="text-sm font-semibold text-emerald-600 dark:text-emerald-300">Export PDF</h3>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Téléchargez facilement vos relevés et graphiques en PDF.</p>
+                </article>
+            </div>
+        </div>
+
+        <section class="mt-20 grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-6 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                <p class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-300" data-counter data-target="1200" data-prefix="+">+1200</p>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Relevés analysés</p>
+            </article>
+            <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-6 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                <p class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-300" data-counter data-target="3" data-suffix=" énergies">3 énergies</p>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Électricité, gaz, eau</p>
+            </article>
+            <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-6 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                <p class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-300" data-counter data-target="100" data-suffix="%">100%</p>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Accès web sécurisé</p>
+            </article>
+        </section>
+
+        <section id="fonctionnalites" class="mt-20" data-reveal>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Fonctionnalités clés</h2>
+            <div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
+                <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Suivi multi-logements</h3>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Rattachez chaque relevé à un logement précis pour un suivi structuré.</p>
+                </article>
+                <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Alertes de seuil</h3>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Définissez des seuils et recevez un avertissement visuel immédiat.</p>
+                </article>
+                <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Visualisations par énergie</h3>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Comprenez l'évolution de vos usages avec des graphiques lisibles.</p>
+                </article>
+                <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Exports exploitables</h3>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Générez des PDF pour partager ou archiver votre suivi énergétique.</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="comment-ca-marche" class="mt-20" data-reveal>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Comment ça marche ?</h2>
+            <div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-3">
+                <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                    <p class="text-sm font-semibold text-emerald-600 dark:text-emerald-300">Étape 1</p>
+                    <h3 class="mt-2 text-base font-semibold text-gray-900 dark:text-gray-100">Créez votre compte</h3>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Inscription rapide pour accéder à votre espace personnel.</p>
+                </article>
+                <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                    <p class="text-sm font-semibold text-emerald-600 dark:text-emerald-300">Étape 2</p>
+                    <h3 class="mt-2 text-base font-semibold text-gray-900 dark:text-gray-100">Ajoutez vos logements et relevés</h3>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Saisissez vos données pour construire un historique fiable.</p>
+                </article>
+                <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                    <p class="text-sm font-semibold text-emerald-600 dark:text-emerald-300">Étape 3</p>
+                    <h3 class="mt-2 text-base font-semibold text-gray-900 dark:text-gray-100">Analysez et optimisez</h3>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Suivez les tendances, activez les alertes et exportez vos rapports.</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="faq" class="mt-20" data-reveal>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">FAQ</h2>
+            <div class="mt-6 space-y-4">
+                <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Puis-je gérer plusieurs logements ?</h3>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Oui, vous pouvez créer autant de logements que nécessaire et associer vos relevés à chacun.</p>
+                </article>
+                <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Les alertes sont-elles automatiques ?</h3>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Oui, une alerte peut se déclencher automatiquement lors de la saisie d'un relevé qui dépasse un seuil.</p>
+                </article>
+                <article class="f-card rounded-xl border border-gray-200 bg-white/90 p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900/80" data-reveal>
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Puis-je exporter mes données ?</h3>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Oui, vous pouvez télécharger un PDF avec vos graphiques et vos relevés depuis le dashboard.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="mt-20 rounded-2xl border border-emerald-200 bg-emerald-50 px-6 py-10 text-center dark:border-emerald-500/20 dark:bg-emerald-500/10" data-reveal>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Prêt à suivre votre énergie efficacement ?</h2>
+            <p class="mt-3 text-sm text-gray-600 dark:text-gray-300">Créez votre espace EcoTrack et commencez en quelques minutes.</p>
+            <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+                <a href="{{ path('register') }}" class="inline-flex items-center rounded-lg bg-emerald-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600">
+                    Créer mon compte
+                </a>
+                <a href="{{ path('login') }}" class="inline-flex items-center rounded-lg border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">
+                    Se connecter
+                </a>
+            </div>
+        </section>
+
+        <footer class="mt-12 border-t border-gray-200 pt-6 text-xs text-gray-500 dark:border-gray-800 dark:text-gray-400">
+            <p>EcoTrack · Suivi énergétique intelligent pour particuliers et foyers.</p>
+        </footer>
+    </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        (function () {
+            const revealNodes = document.querySelectorAll('[data-reveal]');
+            if (revealNodes.length > 0 && 'IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries, obs) => {
+                    entries.forEach((entry) => {
+                        if (!entry.isIntersecting) return;
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    });
+                }, { threshold: 0.14 });
+
+                revealNodes.forEach((node, index) => {
+                    node.style.transitionDelay = `${Math.min(index * 35, 260)}ms`;
+                    observer.observe(node);
+                });
+            } else {
+                revealNodes.forEach((node) => node.classList.add('is-visible'));
+            }
+
+            const counters = document.querySelectorAll('[data-counter]');
+            const runCounter = (el) => {
+                const target = Number(el.getAttribute('data-target') || 0);
+                const prefix = el.getAttribute('data-prefix') || '';
+                const suffix = el.getAttribute('data-suffix') || '';
+                const duration = 1200;
+                const startTime = performance.now();
+
+                const tick = (now) => {
+                    const progress = Math.min((now - startTime) / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    const value = Math.round(target * eased);
+                    el.textContent = `${prefix}${value}${suffix}`;
+                    if (progress < 1) requestAnimationFrame(tick);
+                };
+
+                requestAnimationFrame(tick);
+            };
+
+            if (counters.length > 0 && 'IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries, obs) => {
+                    entries.forEach((entry) => {
+                        if (!entry.isIntersecting) return;
+                        runCounter(entry.target);
+                        obs.unobserve(entry.target);
+                    });
+                }, { threshold: 0.5 });
+
+                counters.forEach((counter) => observer.observe(counter));
+            } else {
+                counters.forEach((counter) => runCounter(counter));
+            }
+
+            const blobA = document.getElementById('home-blob-a');
+            const blobB = document.getElementById('home-blob-b');
+            if (blobA && blobB) {
+                window.addEventListener('mousemove', (event) => {
+                    const x = event.clientX / window.innerWidth - 0.5;
+                    const y = event.clientY / window.innerHeight - 0.5;
+                    blobA.style.transform = `translate(${x * 18}px, ${y * 14}px)`;
+                    blobB.style.transform = `translate(${x * -14}px, ${y * -10}px)`;
+                }, { passive: true });
+            }
+        })();
+    </script>
+{% endblock %}

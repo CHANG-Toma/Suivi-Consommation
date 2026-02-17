@@ -18,7 +18,7 @@ class DashboardController extends AbstractController
             return $this->redirectToRoute('dashboard');
         }
 
-        return $this->redirectToRoute('login');
+        return $this->render('home/index.html.twig');
     }
 
     #[Route('/dashboard', name: 'dashboard')]
