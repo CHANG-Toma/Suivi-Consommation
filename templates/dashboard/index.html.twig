@@ -4,9 +4,17 @@
 
 {% block body %}
 <div class="px-4 py-6 sm:px-0">
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Tableau de bord</h1>
-        <p class="text-gray-600 dark:text-gray-300">Suivez vos relevés énergétiques</p>
+    <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Tableau de bord</h1>
+            <p class="text-gray-600 dark:text-gray-300">Suivez vos relevés énergétiques</p>
+        </div>
+        <button id="export-dashboard-pdf" type="button" class="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-600">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M5 20h14a1 1 0 001-1v-3M4 16v3a1 1 0 001 1"/>
+            </svg>
+            Télécharger le PDF
+        </button>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -125,6 +133,7 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script>
         (function () {
             const perTypeChartData = {{ perTypeChartData|json_encode|raw }};
@@ -170,6 +179,96 @@
                     });
                 });
             }
+
+            const monthlyTotals = [
+                {% for typeEnergie in typesEnergie %}
+                {
+                    label: '{{ (typeEnergie.nom ?? 'Type')|e('js') }}',
+                    value: '{{ (monthlyTotalsByType[typeEnergie.id]|default(0))|number_format(2, ',', ' ') }} {{ (typeEnergie.unite ?? 'kWh')|e('js') }}'
+                }{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ];
+
+            const exportBtn = document.getElementById('export-dashboard-pdf');
+            if (!exportBtn || !window.jspdf || !window.jspdf.jsPDF) return;
+
+            const addPageIfNeeded = (doc, y, neededHeight) => {
+                const pageHeight = doc.internal.pageSize.getHeight();
+                if (y + neededHeight > pageHeight - 10) {
+                    doc.addPage();
+                    return 16;
+                }
+                return y;
+            };
+
+            exportBtn.addEventListener('click', () => {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const maxWidth = pageWidth - 20;
+                let y = 16;
+
+                doc.setFontSize(16);
+                doc.text('EcoTrack - Export dashboard', 10, y);
+                y += 7;
+                doc.setFontSize(10);
+                doc.setTextColor(100);
+                doc.text(`Date d'export: ${new Date().toLocaleString('fr-FR')}`, 10, y);
+                y += 8;
+
+                doc.setTextColor(30);
+                doc.setFontSize(12);
+                doc.text('Consommations du mois par energie', 10, y);
+                y += 6;
+                doc.setFontSize(10);
+                monthlyTotals.forEach((item) => {
+                    y = addPageIfNeeded(doc, y, 6);
+                    doc.text(`- ${item.label}: ${item.value}`, 10, y);
+                    y += 5;
+                });
+                y += 3;
+
+                const chartCanvases = Array.from(document.querySelectorAll('canvas[id^="dashboard-type-chart-"]'));
+                chartCanvases.forEach((canvas) => {
+                    if (!(canvas instanceof HTMLCanvasElement)) return;
+
+                    const parentCard = canvas.closest('.bg-white');
+                    const titleNode = parentCard ? parentCard.querySelector('h3') : null;
+                    const chartTitle = titleNode ? titleNode.textContent.trim() : 'Graphique';
+                    const imgData = canvas.toDataURL('image/png');
+
+                    y = addPageIfNeeded(doc, y, 58);
+                    doc.setFontSize(11);
+                    doc.setTextColor(30);
+                    doc.text(`Graphique ${chartTitle}`, 10, y);
+                    y += 3;
+
+                    const imgHeight = 50;
+                    doc.addImage(imgData, 'PNG', 10, y, maxWidth, imgHeight);
+                    y += imgHeight + 6;
+                });
+
+                const tableRows = document.querySelectorAll('table tbody tr');
+                if (tableRows.length > 0) {
+                    y = addPageIfNeeded(doc, y, 12);
+                    doc.setFontSize(12);
+                    doc.text('Releves', 10, y);
+                    y += 6;
+                    doc.setFontSize(10);
+
+                    tableRows.forEach((row) => {
+                        const cells = row.querySelectorAll('td');
+                        if (cells.length < 3) return;
+                        const line = `${cells[0].textContent.trim()} | ${cells[1].textContent.trim()} | ${cells[2].textContent.trim()}`;
+                        y = addPageIfNeeded(doc, y, 5);
+                        doc.text(line, 10, y, { maxWidth });
+                        y += 5;
+                    });
+                }
+
+                const dateTag = new Date().toISOString().slice(0, 10);
+                doc.save(`ecotrack-dashboard-${dateTag}.pdf`);
+            });
         })();
     </script>
 {% endblock %}
