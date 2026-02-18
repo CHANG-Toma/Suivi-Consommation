@@ -6,6 +6,7 @@ Application web de **suivi de consommation** (énergie), développée avec Symfo
 
 - PHP 8.2+
 - Composer
+- Node.js & npm (pour compiler le CSS)
 - Docker & Docker Compose (pour MySQL)
 
 ## Installation
@@ -14,6 +15,7 @@ Application web de **suivi de consommation** (énergie), développée avec Symfo
 
    ```bash
    composer install
+   npm install
    ```
 
 2. **Démarrer la base de données (MySQL + phpMyAdmin)**
@@ -59,17 +61,21 @@ Application web de **suivi de consommation** (énergie), développée avec Symfo
 
 - **Backend** : Symfony 7, PHP 8.2+
 - **Base de données** : MySQL 8 (Doctrine ORM, migrations)
-- **Front** : Twig, Stimulus
+- **Front** : Twig, Stimulus, Tailwind CSS
 - **Sécurité** : Symfony Security (authentification)
 
 ## Commandes utiles
 
 | Commande | Description |
 |----------|-------------|
-| `composer install` | Installer les dépendances |
+| `composer install` | Installer les dépendances PHP |
+| `npm install` | Installer les dépendances Node.js |
+| `npm run build` | Compiler le CSS (production) |
+| `npm run watch` | Compiler le CSS en mode watch (développement) |
 | `docker-compose up -d` | Démarrer MySQL et phpMyAdmin |
 | `php bin/console doctrine:migrations:migrate` | Exécuter les migrations |
-| `php bin/console doctrine:fixtures:load` | Charger les fixtures (données de test) |
+| `php bin/console doctrine:fixtures:load --append` | Charger les types d'énergie de base (sans vider la base) |
+| `php bin/console doctrine:fixtures:load` | Charger toutes les fixtures (vide la base avant) |
 
 ---
 

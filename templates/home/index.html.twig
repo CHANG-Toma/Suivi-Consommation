@@ -82,43 +82,61 @@
     <div id="home-blob-a" class="home-blob home-blob-a"></div>
     <div id="home-blob-b" class="home-blob home-blob-b"></div>
     <div class="mx-auto max-w-6xl px-6 py-10 lg:px-8">
-        <header class="mb-16 flex flex-wrap items-center justify-between gap-4" data-reveal>
+        <header class="mb-12 sm:mb-16 flex flex-wrap items-center justify-between gap-4" data-reveal>
             <div class="flex items-center gap-3">
                 <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500 text-lg font-bold text-white shadow-sm">E</span>
                 <span class="text-xl font-bold text-gray-900 dark:text-gray-100">EcoTrack</span>
             </div>
-            <nav class="hidden items-center gap-6 md:flex">
+            <nav id="home-nav" class="hidden md:flex items-center gap-6">
                 <a href="#fonctionnalites" class="text-sm font-medium text-gray-600 transition hover:text-emerald-600 dark:text-gray-300 dark:hover:text-emerald-300">Fonctionnalités</a>
                 <a href="#comment-ca-marche" class="text-sm font-medium text-gray-600 transition hover:text-emerald-600 dark:text-gray-300 dark:hover:text-emerald-300">Comment ça marche</a>
                 <a href="#faq" class="text-sm font-medium text-gray-600 transition hover:text-emerald-600 dark:text-gray-300 dark:hover:text-emerald-300">FAQ</a>
             </nav>
-            <div class="flex items-center gap-3">
-                <a href="{{ path('login') }}" class="inline-flex items-center rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button id="mobile-nav-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" aria-label="Menu">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <a href="{{ path('login') }}" class="hidden sm:inline-flex items-center rounded-lg border border-gray-300 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">
                     Se connecter
                 </a>
-                <a href="{{ path('register') }}" class="inline-flex items-center rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-600">
-                    Créer un compte
+                <a href="{{ path('register') }}" class="inline-flex items-center rounded-lg bg-emerald-500 px-3 sm:px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-600">
+                    <span class="hidden sm:inline">Créer un compte</span>
+                    <span class="sm:hidden">S'inscrire</span>
                 </a>
             </div>
         </header>
+        
+        {# Menu mobile #}
+        <div id="mobile-nav-menu" class="hidden md:hidden mb-8 rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 p-4 shadow-sm" data-reveal>
+            <nav class="flex flex-col gap-3">
+                <a href="#fonctionnalites" class="text-sm font-medium text-gray-600 transition hover:text-emerald-600 dark:text-gray-300 dark:hover:text-emerald-300 py-2">Fonctionnalités</a>
+                <a href="#comment-ca-marche" class="text-sm font-medium text-gray-600 transition hover:text-emerald-600 dark:text-gray-300 dark:hover:text-emerald-300 py-2">Comment ça marche</a>
+                <a href="#faq" class="text-sm font-medium text-gray-600 transition hover:text-emerald-600 dark:text-gray-300 dark:hover:text-emerald-300 py-2">FAQ</a>
+                <a href="{{ path('login') }}" class="mt-2 inline-flex items-center justify-center rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">
+                    Se connecter
+                </a>
+            </nav>
+        </div>
 
-        <div class="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center" data-reveal>
+        <div class="grid grid-cols-1 gap-8 sm:gap-12 lg:grid-cols-2 lg:items-center" data-reveal>
             <div>
                 <span class="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
                     Nouvelle façon de suivre votre énergie
                 </span>
-                <h1 class="mt-4 text-4xl font-extrabold leading-tight text-gray-900 dark:text-gray-100 sm:text-5xl">
+                <h1 class="mt-4 text-3xl sm:text-4xl font-extrabold leading-tight text-gray-900 dark:text-gray-100 lg:text-5xl">
                     Pilotez vos relevés énergétiques en toute simplicité.
                 </h1>
-                <p class="mt-5 text-lg text-gray-600 dark:text-gray-300">
+                <p class="mt-4 sm:mt-5 text-base sm:text-lg text-gray-600 dark:text-gray-300">
                     Centralisez vos logements, suivez vos relevés, visualisez vos tendances
                     et soyez alerté dès qu'un seuil est dépassé.
                 </p>
-                <div class="mt-8 flex flex-wrap gap-3">
-                    <a href="{{ path('register') }}" class="inline-flex items-center rounded-lg bg-emerald-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600">
+                <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row flex-wrap gap-3">
+                    <a href="{{ path('register') }}" class="inline-flex items-center justify-center rounded-lg bg-emerald-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600">
                         Commencer gratuitement
                     </a>
-                    <a href="{{ path('login') }}" class="inline-flex items-center rounded-lg border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">
+                    <a href="{{ path('login') }}" class="inline-flex items-center justify-center rounded-lg border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">
                         J'ai déjà un compte
                     </a>
                 </div>
@@ -304,6 +322,21 @@
                     blobA.style.transform = `translate(${x * 18}px, ${y * 14}px)`;
                     blobB.style.transform = `translate(${x * -14}px, ${y * -10}px)`;
                 }, { passive: true });
+            }
+
+            const mobileNavToggle = document.getElementById('mobile-nav-toggle');
+            const mobileNavMenu = document.getElementById('mobile-nav-menu');
+            if (mobileNavToggle && mobileNavMenu) {
+                mobileNavToggle.addEventListener('click', () => {
+                    mobileNavMenu.classList.toggle('hidden');
+                });
+                
+                // Fermer le menu quand on clique sur un lien
+                mobileNavMenu.querySelectorAll('a').forEach((link) => {
+                    link.addEventListener('click', () => {
+                        mobileNavMenu.classList.add('hidden');
+                    });
+                });
             }
         })();
     </script>

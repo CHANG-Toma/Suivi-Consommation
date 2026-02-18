@@ -3,11 +3,11 @@
 {% block title %}Inscription - EcoTrack{% endblock %}
 
 {% block body %}
-<div class="w-full max-w-md">
-    <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4 border border-gray-100 dark:border-gray-800">
+<div class="w-full max-w-md mx-auto px-4 sm:px-0">
+    <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg px-6 sm:px-8 pt-6 pb-8 mb-4 border border-gray-100 dark:border-gray-800">
         <div class="text-center mb-6">
-            <h1 class="text-3xl font-bold text-emerald-500 mb-2">EcoTrack</h1>
-            <p class="text-gray-600 dark:text-gray-300">Créer un compte</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-emerald-500 mb-2">EcoTrack</h1>
+            <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300">Créer un compte</p>
         </div>
 
         {{ form_start(registrationForm, {'attr': {'class': 'space-y-4 text-gray-900 dark:text-gray-100'}}) }}
@@ -17,13 +17,13 @@
             {{ form_row(registrationForm.plainPassword) }}
 
             <button type="submit" 
-                    class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150">
+                    class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2.5 sm:py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 text-sm sm:text-base">
                 S'inscrire
             </button>
         {{ form_end(registrationForm) }}
 
         <div class="mt-6 text-center">
-            <p class="text-sm text-gray-600 dark:text-gray-300">
+            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
                 Déjà un compte ? 
                 <a href="{{ path('login') }}" class="text-emerald-500 hover:text-emerald-600 font-medium">
                     Se connecter

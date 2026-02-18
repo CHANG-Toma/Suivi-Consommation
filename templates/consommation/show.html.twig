@@ -3,23 +3,24 @@
 {% block title %}Détail relevé - EcoTrack{% endblock %}
 
 {% block body %}
-<div class="mx-auto max-w-3xl px-4 py-6 sm:px-0">
-    <div class="mb-6">
-        <a href="{{ path('consommation_index') }}" class="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 transition hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300">
+<div class="mx-auto max-w-3xl px-4 py-4 sm:py-6 sm:px-0">
+    <div class="mb-4 sm:mb-6">
+        <a href="{{ path('consommation_index') }}" class="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-emerald-600 transition hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
-            Retour à mes relevés
+            <span class="hidden sm:inline">Retour à mes relevés</span>
+            <span class="sm:hidden">Retour</span>
         </a>
     </div>
 
-    <article class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-8">
-        <div class="mb-5 flex items-start justify-between gap-3">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ consommation.typeEnergie.nom }}</h1>
-                <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">{{ consommation.logement.nom }}</p>
+    <article class="rounded-xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 lg:p-8">
+        <div class="mb-4 sm:mb-5 flex flex-wrap items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 break-words">{{ consommation.typeEnergie.nom }}</h1>
+                <p class="mt-2 text-xs sm:text-sm text-gray-600 dark:text-gray-300 break-words">{{ consommation.logement.nom }}</p>
             </div>
-            <span class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
+            <span class="inline-flex items-center rounded-full bg-emerald-100 px-2 sm:px-2.5 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300 shrink-0">
                 {{ consommation.dateReleve|date('d/m/Y') }}
             </span>
         </div>

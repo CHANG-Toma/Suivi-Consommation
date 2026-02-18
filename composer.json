@@ -1,5 +1,6 @@
 {
     "require": {
+        "php": ">=8.2.0",
         "symfony/webapp-pack": "^1.4",
         "symfony/runtime": "^7.4",
         "symfony/yaml": "^7.4",
@@ -17,6 +18,10 @@
     "config": {
         "allow-plugins": {
             "symfony/runtime": true
-        }
+        },
+        "platform": {
+            "php": "8.2.12"
+        },
+        "platform-check": false
     }
 }

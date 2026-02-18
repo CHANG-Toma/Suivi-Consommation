@@ -35,16 +35,20 @@
                 opacity: 1 !important;
             }
         }
+
+        .safe-area-pb {
+            padding-bottom: env(safe-area-inset-bottom, 0);
+        }
     </style>
     {% block stylesheets %}{% endblock %}
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-900 dark:text-gray-100 transition-colors">
     {% if app.user %}
         <div class="flex h-screen overflow-hidden">
-            {# Sidebar #}
-            <aside id="app-sidebar" class="h-screen w-72 shrink-0 overflow-hidden flex flex-col bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 shadow-sm transition-all duration-300">
+            {# Sidebar — visible uniquement sur desktop (lg+) #}
+            <aside id="app-sidebar" class="hidden lg:flex h-screen w-72 shrink-0 flex-col overflow-hidden bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 shadow-sm">
                 {# Logo #}
-                <div class="p-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between gap-3">
+                <div class="p-4 sm:p-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between gap-3">
                     <a id="app-brand" href="{{ path('dashboard') }}" class="flex items-center gap-2.5 group min-w-0">
                         <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500 text-white text-lg font-bold shadow-sm group-hover:bg-emerald-600 transition-colors">E</span>
                         <span data-sidebar-text class="text-xl font-bold text-gray-800 dark:text-gray-100 group-hover:text-emerald-600 transition-colors truncate">EcoTrack</span>
@@ -126,24 +130,29 @@
                     </a>
                 </div>
             </aside>
-            {# Contenu principal #}
-            <main class="flex-1 overflow-y-auto">
+            {# Contenu principal — padding bas pour la barre de navigation mobile #}
+            <main class="flex-1 overflow-y-auto pb-20 lg:pb-0">
     {% else %}
         {% set isPublicHome = app.request.attributes.get('_route') == 'home' %}
         <main class="{{ isPublicHome ? 'min-h-screen' : 'min-h-screen flex items-center justify-center' }}">
     {% endif %}
                 {% if app.user %}
-                    <header class="sticky top-0 z-10 border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-950/90 backdrop-blur px-6 lg:px-8 py-3">
-                        <div class="flex items-center justify-end">
-                            <a href="{{ path('profile_index') }}" class="mr-3 inline-flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    <header class="sticky top-0 z-30 border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-950/90 backdrop-blur px-4 sm:px-6 lg:px-8 py-3">
+                        <div class="flex items-center justify-between">
+                            <a href="{{ path('dashboard') }}" class="flex items-center gap-2 lg:hidden">
+                                <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500 text-white text-lg font-bold shadow-sm">E</span>
+                                <span class="text-lg font-bold text-gray-800 dark:text-gray-100">EcoTrack</span>
+                            </a>
+                            <div class="hidden lg:block lg:flex-1"></div>
+                            <a href="{{ path('profile_index') }}" class="ml-auto inline-flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9 9 0 1118.88 17.8M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 </svg>
-                                Mon Profile
+                                <span class="hidden sm:inline">Mon Profile</span>
                             </a>
                         </div>
                     </header>
-                    <div class="py-6 px-6 lg:px-8">
+                    <div class="py-4 sm:py-6 px-4 sm:px-6 lg:px-8">
                 {% endif %}
                 {% block body %}{% endblock %}
                 {% if app.user %}
@@ -152,6 +161,35 @@
             </main>
     {% if app.user %}
         </div>
+        
+        {# Barre de navigation fixe en bas — mobile uniquement #}
+        <nav class="fixed bottom-0 left-0 right-0 z-50 flex lg:hidden items-center justify-around border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg safe-area-pb" aria-label="Navigation principale">
+            {% set _route = app.request.attributes.get('_route') %}
+            <a href="{{ path('dashboard') }}" class="flex flex-1 flex-col items-center gap-1 py-2.5 px-2 text-center transition-colors {{ _route == 'dashboard' ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100' }}">
+                <svg class="h-6 w-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                </svg>
+                <span class="text-[10px] font-medium">Tableau de bord</span>
+            </a>
+            <a href="{{ path('logement_index') }}" class="flex flex-1 flex-col items-center gap-1 py-2.5 px-2 text-center transition-colors {{ _route starts with 'logement_' ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100' }}">
+                <svg class="h-6 w-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10l9-7 9 7v10a2 2 0 01-2 2h-4a2 2 0 01-2-2V14H9v6a2 2 0 01-2 2H3z"/>
+                </svg>
+                <span class="text-[10px] font-medium">Logements</span>
+            </a>
+            <a href="{{ path('consommation_index') }}" class="flex flex-1 flex-col items-center gap-1 py-2.5 px-2 text-center transition-colors {{ _route starts with 'consommation_' ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100' }}">
+                <svg class="h-6 w-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6m4 6V7m4 10v-3M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+                <span class="text-[10px] font-medium">Relevés</span>
+            </a>
+            <a href="{{ path('alerte_index') }}" class="flex flex-1 flex-col items-center gap-1 py-2.5 px-2 text-center transition-colors {{ _route starts with 'alerte_' ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100' }}">
+                <svg class="h-6 w-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.17V11a6 6 0 10-12 0v3.17c0 .53-.21 1.04-.59 1.43L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                <span class="text-[10px] font-medium">Alertes</span>
+            </a>
+        </nav>
     {% endif %}
 
     {% if app.user %}
@@ -202,51 +240,44 @@
                 const themeStorageKey = 'ecotrack.theme.dark';
                 const root = document.documentElement;
 
-                if (!sidebar || !toggle || !menuIcon || !closeIcon) return;
-
                 const setCollapsed = (collapsed) => {
+                    if (!sidebar) return;
                     sidebar.classList.toggle('w-72', !collapsed);
                     sidebar.classList.toggle('w-20', collapsed);
                     sidebar.classList.toggle('border-r', !collapsed);
-                    toggle.setAttribute('aria-expanded', String(!collapsed));
-                    toggle.setAttribute('aria-label', collapsed ? 'Ouvrir le menu' : 'Fermer le menu');
-                    toggle.setAttribute('title', collapsed ? 'Ouvrir le menu' : 'Fermer le menu');
-                    menuIcon.classList.toggle('hidden', !collapsed);
-                    closeIcon.classList.toggle('hidden', collapsed);
-                    textNodes.forEach((node) => node.classList.toggle('hidden', collapsed));
-                    itemNodes.forEach((node) => {
-                        node.classList.toggle('justify-center', collapsed);
-                    });
-                    if (brand) {
-                        brand.classList.toggle('justify-center', collapsed);
+                    if (toggle) {
+                        toggle.setAttribute('aria-expanded', String(!collapsed));
+                        toggle.setAttribute('aria-label', collapsed ? 'Ouvrir le menu' : 'Fermer le menu');
+                        toggle.setAttribute('title', collapsed ? 'Ouvrir le menu' : 'Fermer le menu');
                     }
+                    if (menuIcon) menuIcon.classList.toggle('hidden', !collapsed);
+                    if (closeIcon) closeIcon.classList.toggle('hidden', collapsed);
+                    textNodes.forEach((node) => node.classList.toggle('hidden', collapsed));
+                    itemNodes.forEach((node) => node.classList.toggle('justify-center', collapsed));
+                    if (brand) brand.classList.toggle('justify-center', collapsed);
                 };
 
                 const setDarkTheme = (isDark) => {
                     root.classList.toggle('dark', isDark);
-                    if (themeText) {
-                        themeText.textContent = isDark ? 'Mode clair' : 'Mode sombre';
-                    }
-                    if (themeMoonIcon) {
-                        themeMoonIcon.classList.toggle('hidden', isDark);
-                    }
-                    if (themeSunIcon) {
-                        themeSunIcon.classList.toggle('hidden', !isDark);
-                    }
+                    if (themeText) themeText.textContent = isDark ? 'Mode clair' : 'Mode sombre';
+                    if (themeMoonIcon) themeMoonIcon.classList.toggle('hidden', isDark);
+                    if (themeSunIcon) themeSunIcon.classList.toggle('hidden', !isDark);
                 };
 
                 const initialCollapsed = localStorage.getItem(storageKey) === 'true';
                 setCollapsed(initialCollapsed);
+
                 const savedTheme = localStorage.getItem(themeStorageKey);
                 const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
                 setDarkTheme(savedTheme ? savedTheme === 'true' : prefersDark);
 
-                toggle.addEventListener('click', () => {
-                    const collapsed = sidebar.classList.contains('w-20');
-                    const nextCollapsed = !collapsed;
-                    setCollapsed(nextCollapsed);
-                    localStorage.setItem(storageKey, String(nextCollapsed));
-                });
+                if (toggle) {
+                    toggle.addEventListener('click', () => {
+                        const collapsed = sidebar && sidebar.classList.contains('w-20');
+                        setCollapsed(!collapsed);
+                        localStorage.setItem(storageKey, String(!collapsed));
+                    });
+                }
 
                 if (themeToggle) {
                     themeToggle.addEventListener('click', () => {
